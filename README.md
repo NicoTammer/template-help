@@ -1,5 +1,7 @@
 # template-help
 
+Heb je een foutje gezien? Fix het een maak een pull request! :D
+
 ## Benodigdheden die je misschien niet al hebt :)
 - Visual Studio 2022  https://visualstudio.microsoft.com/vs/
 - PostgreSQL          https://www.postgresql.org/download/
