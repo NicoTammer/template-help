@@ -56,7 +56,7 @@ Nu je (hoop ik) alles hebt kunnen we beginnen!
 3. Maak een (in mijn geval) GetDogs map aan in de Queries map.
 4. Maak een (in mijn geval) CreateDog map aan in de Commands map.
 5. Voeg de volgende classes (met jouw entiteit naam) toe:
-![afbeelding](https://user-images.githubusercontent.com/7372864/191075743-1d3a39e9-ce8a-486d-a3e5-ba775c8ecd99.png)
+![afbeelding](https://user-images.githubusercontent.com/7372864/205299829-01dab1c5-2156-4651-b219-84cce3d09d8c.png)
 6. We gaan eerst de Query maken. Open DogDto (Data Transfer Object) in Queries/GetDogs. Hier geven we aan wat we terug willen geven van een Dog aan de user. Ik wil dat de user alleen de Id en de Name van de dog kan zien dus dit is mijn Dto, pas aan naar jouw entiteit:
 ```dotnet 
 using Template.Application.Common.Mappings;
