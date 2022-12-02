@@ -141,6 +141,27 @@ public record CreateDogCommand : IRequest<int>
 	public string? Name { get; init; }
 }
 
+public class CreateDogCommandValidator : AbstractValidator<CreateDogCommand>
+{
+	private readonly IApplicationDbContext _context;
+
+	public CreateDogCommandValidator(IApplicationDbContext context)
+	{
+		_context = context;
+
+		RuleFor(v => v.Name)
+			.NotEmpty().WithMessage("Name is required.")
+			.MaximumLength(200).WithMessage("Name must not exceed 200 characters.")
+			.MustAsync(BeUniqueTitle).WithMessage("The specified name already exists.");
+	}
+
+	public async Task<bool> BeUniqueTitle(string name, CancellationToken cancellationToken)
+	{
+		return await _context.Dogs
+			.AllAsync(l => l.Name != name, cancellationToken);
+	}
+}
+
 public class CreateDogCommandHandler : IRequestHandler<CreateDogCommand, int>
 {
 	private readonly IApplicationDbContext _context;
@@ -165,36 +186,7 @@ public class CreateDogCommandHandler : IRequestHandler<CreateDogCommand, int>
 	}
 }
 ```
-10. Vervolgens hetzelfde voor de CreateDogCommandValidator...:
-```
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
-using Template.Application.Common.Interfaces;
-
-namespace Template.Application.Dogs.Commands.CreateDog;
-
-public class CreateDogCommandValidator : AbstractValidator<CreateDogCommand>
-{
-	private readonly IApplicationDbContext _context;
-
-	public CreateDogCommandValidator(IApplicationDbContext context)
-	{
-		_context = context;
-
-		RuleFor(v => v.Name)
-			.NotEmpty().WithMessage("Name is required.")
-			.MaximumLength(200).WithMessage("Name must not exceed 200 characters.")
-			.MustAsync(BeUniqueTitle).WithMessage("The specified name already exists.");
-	}
-
-	public async Task<bool> BeUniqueTitle(string name, CancellationToken cancellationToken)
-	{
-		return await _context.Dogs
-			.AllAsync(l => l.Name != name, cancellationToken);
-	}
-}
-```
-11. Speel vooral met de validation, als je jouw entiteit meer properties geeft moet je wel weer op nieuw een migration maken en de database updaten zoals in de eerdere stappen. Het is vrij vanzelfsprekend, kijk vooral welke opties je hebt wanneer je RuleFor(v => v.Name). neerzet, dan opent er zo'n context menu dingetje met al je opties. En google!
+10. Speel vooral met de validation, als je jouw entiteit meer properties geeft moet je wel weer op nieuw een migration maken en de database updaten zoals in de eerdere stappen. Het is vrij vanzelfsprekend, kijk vooral welke opties je hebt wanneer je RuleFor(v => v.Name). neerzet, dan opent er zo'n context menu dingetje met al je opties. En google!
 
 ## De nieuwe controller maken
 We hebben nu ons command en query, hebben we weinig aan zonder een controller waar onze frontenders tegen kunnen praten. Voor het gemak maken we de routes toegankelijk zonder in te loggen, iedereen wil natuurlijk zijn hond delen met de wereld :)
@@ -243,9 +235,3 @@ public class DogsController : ApiControllerBase
 ```
 9. Nu kreeg je als het goed gegaan is een nummer terug. Als we uiteindelijk functionaliteit implementeren om specifieke Dogs op te halen kunnen we die gebruiken!
 10. Voer stap 2 t/m 4 nog eens uit om onze dogs weer op te halen. Nu krijg je als het goed is wel een dog terug!
-
-
-
-
-
-
